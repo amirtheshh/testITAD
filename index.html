@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PharmaBox Dashboard</title>
+  <style>
+    :root{
+      --bg1:#0a0f1e;
+      --bg2:#0d1528;
+      --card: rgba(255,255,255,.07);
+      --card2: rgba(255,255,255,.10);
+      --border: rgba(255,255,255,.14);
+      --text:#f0f4ff;
+      --muted: rgba(240,244,255,.75);
+      --shadow: 0 20px 50px rgba(0,0,0,.40);
+      --shadow-sm: 0 8px 20px rgba(0,0,0,.25);
+      --radius: 20px;
+      --radius-sm: 14px;
+
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+
+      --chip: rgba(255,255,255,.11);
+      --chipBorder: rgba(255,255,255,.16);
+
+      --accent-primary: rgba(99,102,241,.95);
+      --accent-secondary: rgba(16,185,129,.85);
+    }
+
+    *{
+      box-sizing:border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1600px 1000px at 8% 0%, rgba(79,70,229,.32), transparent 60%),
+        radial-gradient(1400px 900px at 92% 8%, rgba(16,185,129,.22), transparent 64%),
+        radial-gradient(1000px 800px at 50% 100%, rgba(99,102,241,.15), transparent 70%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      padding: 20px 16px 32px;
+      background-attachment: fixed;
+    }
+
+    .wrap{
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header{
+      display:flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding-bottom: 4px;
+    }
+
+    h1{
+      font-size: 32px;
+      margin:0;
+      letter-spacing: -.5px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--text) 0%, rgba(240,244,255,.85) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle{
+      margin-top: 8px;
+      font-size: 13.5px;
+      color: var(--muted);
+      max-width: 920px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .panel{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,255,255,.15) 30%,
+        rgba(255,255,255,.15) 70%,
+        transparent 100%);
+      pointer-events: none;
+    }
+
+    .controls{
+      display:flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: end;
+      padding: 16px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 230px;
+    }
+
+    label{
+      font-size: 12.5px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+
+    input{
+      padding: 13px 16px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      outline: none;
+      transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 14.5px;
+      font-weight: 500;
+    }
+
+    input:hover{
+      border-color: rgba(99,102,241,.35);
+      background: rgba(255,255,255,.10);
+    }
+
+    input:focus{
+      border-color: rgba(99,102,241,.65);
+      background: rgba(255,255,255,.12);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(99,102,241,.15);
+    }
+
+    .actions{
+      display:flex;
+      gap: 12px;
+      align-items: center;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+
+    button{
+      padding: 13px 20px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid rgba(99,102,241,.50);
+      background: linear-gradient(135deg, rgba(99,102,241,.22), rgba(99,102,241,.16));
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+      font-size: 14.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent);
+      transition: left .5s ease;
+    }
+
+    button:hover::before{
+      left: 100%;
+    }
+
+    button:hover{
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(99,102,241,.32), rgba(99,102,241,.24));
+      border-color: rgba(99,102,241,.75);
+      box-shadow: 0 12px 28px rgba(99,102,241,.25);
+    }
+
+    button:active{ transform: translateY(0); }
+
+    /* Secondary button look for the "Live Analytics" CTA */
+    .btn-secondary{
+      border: 1.5px solid rgba(16,185,129,.45);
+      background: linear-gradient(135deg, rgba(16,185,129,.18), rgba(16,185,129,.12));
+    }
+    .btn-secondary:hover{
+      border-color: rgba(16,185,129,.70);
+      background: linear-gradient(135deg, rgba(16,185,129,.28), rgba(16,185,129,.18));
+      box-shadow: 0 12px 28px rgba(16,185,129,.20);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1.5px solid var(--chipBorder);
+      background: var(--chip);
+      color: var(--muted);
+      font-size: 12.5px;
+      white-space: nowrap;
+      font-weight: 600;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all .2s ease;
+    }
+
+    .pill:hover{
+      border-color: rgba(255,255,255,.22);
+      background: rgba(255,255,255,.14);
+    }
+
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.40);
+      box-shadow: 0 0 8px currentColor;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .7; transform: scale(.95); }
+    }
+
+    .dot.ok{
+      background: var(--ok);
+      box-shadow: 0 0 12px rgba(16,185,129,.6);
+    }
+    .dot.warn{
+      background: var(--warn);
+      box-shadow: 0 0 12px rgba(245,158,11,.6);
+    }
+    .dot.bad{
+      background: var(--bad);
+      box-shadow: 0 0 12px rgba(239,68,68,.6);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 2.25fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      .actions{ margin-left: 0; width: 100%; }
+      .field{ flex: 1; min-width: 180px; }
+      h1{ font-size: 28px; }
+    }
+
+    .stats{ padding: 16px; }
+    .events{ padding: 16px; }
+
+    .statRow{
+      display:flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      border: 1.5px solid rgba(255,255,255,.11);
+      margin-top: 12px;
+      transition: all .2s ease;
+    }
+
+    .statRow:hover{
+      border-color: rgba(255,255,255,.18);
+      background: linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.07));
+      transform: translateX(2px);
+    }
+
+    .statLabel{
+      color: var(--muted);
+      font-size: 12.5px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .statValue{
+      font-weight: 900;
+      font-size: 19px;
+      letter-spacing: -.2px;
+    }
+
+    .eventsHeader{
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .cardsGrid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 980px){
+      .cardsGrid{ grid-template-columns: 1fr; }
+    }
+
+    .eventCard{
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--card2) 0%, var(--card) 100%);
+      border: 1.5px solid var(--border);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn .4s ease-out backwards;
+    }
+
+    .eventCard::after{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(239,68,68,.4) 50%,
+        transparent 100%);
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+
+    .eventCard:hover{
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 16px 40px rgba(0,0,0,.35);
+    }
+
+    .eventCard:hover::after{ opacity: 1; }
+
+    .topRow{
+      display:flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .time{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .badgeRow{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 12px;
+    }
+
+    .badge{
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: .3px;
+      border: 1.5px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.09);
+      text-transform: uppercase;
+      transition: all .2s ease;
+    }
+
+    .badge:hover{ transform: translateY(-1px); }
+
+    .badge.hot{
+      border-color: rgba(239,68,68,.45);
+      background: linear-gradient(135deg, rgba(239,68,68,.18), rgba(239,68,68,.12));
+      color: rgba(255,255,255,.95);
+    }
+    .badge.humid{
+      border-color: rgba(59,130,246,.45);
+      background: linear-gradient(135deg, rgba(59,130,246,.18), rgba(59,130,246,.12));
+      color: rgba(255,255,255,.95);
+    }
+    .badge.lid{
+      border-color: rgba(245,158,11,.45);
+      background: linear-gradient(135deg, rgba(245,158,11,.18), rgba(245,158,11,.12));
+      color: rgba(255,255,255,.95);
+    }
+    .badge.motion{
+      border-color: rgba(168,85,247,.45);
+      background: linear-gradient(135deg, rgba(168,85,247,.18), rgba(168,85,247,.12));
+      color: rgba(255,255,255,.95);
+    }
+
+    .kv{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 720px){
+      .kv{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    .kvBox{
+      padding: 11px 13px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid rgba(255,255,255,.12);
+      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      transition: all .2s ease;
+    }
+
+    .kvBox:hover{
+      border-color: rgba(255,255,255,.18);
+      background: linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.07));
+      transform: scale(1.02);
+    }
+
+    .kvBox .k{
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+
+    .kvBox .v{
+      font-weight: 900;
+      font-size: 15px;
+      letter-spacing: -.2px;
+    }
+
+    .msgList{
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid rgba(255,255,255,.12);
+      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+    }
+
+    .msgList .title{
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .msg{
+      margin: 7px 0;
+      line-height: 1.5;
+      font-size: 13px;
+      color: rgba(240,244,255,.94);
+      font-weight: 500;
+    }
+
+    .banner{
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid rgba(239,68,68,.30);
+      background: linear-gradient(135deg, rgba(239,68,68,.15), rgba(239,68,68,.10));
+      color: rgba(255,255,255,.95);
+      display:none;
+      font-weight: 600;
+    }
+
+    .footerHint{
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11.5px;
+      padding: 3px 7px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(240,244,255,.90);
+      font-weight: 600;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .eventCard:nth-child(1) { animation-delay: .05s; }
+    .eventCard:nth-child(2) { animation-delay: .1s; }
+    .eventCard:nth-child(3) { animation-delay: .15s; }
+    .eventCard:nth-child(4) { animation-delay: .2s; }
+    .eventCard:nth-child(5) { animation-delay: .25s; }
+    .eventCard:nth-child(6) { animation-delay: .3s; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>PharmaBox Dashboard</h1>
+        <div class="subtitle">
+          Live view of PharmaBox alert payloads stored in DynamoDB (only ALERT records are persisted).
+          Data is fetched from your API Gateway endpoint and refreshed automatically.
+        </div>
+      </div>
+
+      <div class="pill" id="healthPill" title="API status">
+        <span class="dot" id="healthDot"></span>
+        <span id="healthText">Starting…</span>
+      </div>
+    </header>
+
+    <div class="panel controls">
+      <div class="field">
+        <label for="deviceId">Device ID</label>
+        <input id="deviceId" value="pharmabox-001" />
+      </div>
+
+      <div class="field" style="min-width:140px;">
+        <label for="limit">Limit (max 50)</label>
+        <input id="limit" value="25" />
+      </div>
+
+      <div class="actions">
+        <button onclick="loadEvents(true)">Refresh</button>
+
+        <!-- ✅ NEW: QuickSight "Live Analytics" button -->
+        <button class="btn-secondary" onclick="openQuickSight()">
+          📊 Live Analytics (QuickSight)
+        </button>
+
+        <span class="pill" title="Auto refresh interval">
+          <span class="dot ok"></span>
+          <span>Auto refresh: 5s</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="banner" id="errorBanner"></div>
+
+    <div class="grid">
+      <div class="panel events">
+        <div class="eventsHeader">
+          <div class="pill">
+            <span>Latest Alerts</span>
+          </div>
+          <div class="pill" id="statusText">Loading…</div>
+        </div>
+
+        <div id="events" class="cardsGrid"></div>
+
+        <div class="footerHint">
+          To generate test data, publish to MQTT topic like <code>pharmabox/data/pharmabox-001</code>
+          using IoT Core MQTT Test Client with temperature/humidity/motion thresholds exceeded.
+        </div>
+
+        <!-- ✅ NEW: Simple embed note (since sandbox/SSO blocks true embed) -->
+        <div class="footerHint" style="margin-top:10px;">
+          🔒 QuickSight is opened via AWS SSO (secure redirect). Direct embedding is restricted unless the hosting domain is allow-listed in QuickSight admin settings.
+        </div>
+      </div>
+
+      <div class="panel stats">
+        <div class="pill" style="justify-content:space-between; width:100%;">
+          <span>Quick Stats</span>
+          <span id="deviceLabel">Device: pharmabox-001</span>
+        </div>
+
+        <div class="statRow">
+          <div class="statLabel">Alerts returned</div>
+          <div class="statValue" id="statCount">—</div>
+        </div>
+
+        <div class="statRow">
+          <div class="statLabel">Most recent time</div>
+          <div class="statValue" id="statLastTime" style="font-size:14px;">—</div>
+        </div>
+
+        <div class="statRow">
+          <div class="statLabel">Most recent issues</div>
+          <div class="statValue" id="statLastIssues" style="font-size:14px;">—</div>
+        </div>
+
+        <div class="footerHint">
+          This view shows alert snapshots only. Normal sensor readings can be stored in Timestream/S3 for trend analytics.
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const API_BASE = "https://r6zqp9jvi4.execute-api.ap-southeast-2.amazonaws.com/events";
+
+  // ✅ NEW: Your QuickSight dashboard link
+  const QUICKSIGHT_DASHBOARD_URL ="https://ap-southeast-2.quicksight.aws.amazon.com/sn/account/amir-ITAD-project/dashboards/e082f6db-dfcf-4085-9291-17d7f2f6d414/views/fc21a43c-8e34-4152-83b9-830028577f43";
+
+  // ✅ NEW: Opens QuickSight in a new tab (SSO will prompt if needed)
+  function openQuickSight() {
+    window.open(QUICKSIGHT_DASHBOARD_URL, "_blank", "noopener,noreferrer");
+  }
+
+  function toReadableTime(ts) {
+    if (ts === undefined || ts === null) return "N/A";
+    const n = Number(ts);
+    if (!Number.isFinite(n)) return "N/A";
+    const ms = n >= 1e12 ? n : n * 1000;
+    const d = new Date(ms);
+    return isNaN(d.getTime()) ? "N/A" : d.toLocaleString();
+  }
+
+  function badgeClass(issue) {
+    const s = String(issue || "").toUpperCase();
+    if (s.includes("TEMP")) return "hot";
+    if (s.includes("HUMID")) return "humid";
+    if (s.includes("LID")) return "lid";
+    if (s.includes("MOTION") || s.includes("TAMPER")) return "motion";
+    return "";
+  }
+
+  function setHealth(ok, msg) {
+    const dot = document.getElementById("healthDot");
+    const text = document.getElementById("healthText");
+    dot.className = "dot " + (ok ? "ok" : "bad");
+    text.textContent = msg;
+  }
+
+  function showError(message) {
+    const b = document.getElementById("errorBanner");
+    b.textContent = message;
+    b.style.display = "block";
+  }
+
+  function clearError() {
+    const b = document.getElementById("errorBanner");
+    b.textContent = "";
+    b.style.display = "none";
+  }
+
+  async function loadEvents(userTriggered=false) {
+    try {
+      clearError();
+
+      const deviceId = (document.getElementById("deviceId").value || "").trim() || "pharmabox-001";
+      const limitVal = (document.getElementById("limit").value || "").trim() || "25";
+      let limit = Number(limitVal);
+      if (!Number.isFinite(limit) || limit < 1) limit = 25;
+      if (limit > 50) limit = 50;
+
+      document.getElementById("deviceLabel").textContent = `Device: ${deviceId}`;
+      document.getElementById("statusText").textContent = userTriggered ? "Refreshing…" : "Fetching…";
+
+      const url = `${API_BASE}?deviceId=${encodeURIComponent(deviceId)}&limit=${encodeURIComponent(String(limit))}`;
+
+      const res = await fetch(url);
+      if (!res.ok) {
+        setHealth(false, `API Error`);
+        showError(`API error: ${res.status} ${res.statusText}`);
+        document.getElementById("statusText").textContent = "Failed";
+        return;
+      }
+
+      const data = await res.json();
+      const items = Array.isArray(data.items) ? data.items : [];
+      setHealth(true, "API OK");
+
+      document.getElementById("statusText").textContent =
+        `Showing ${items.length} alert record(s)`;
+
+      document.getElementById("statCount").textContent = String(items.length || 0);
+
+      if (items.length > 0) {
+        const newest = items[0];
+        document.getElementById("statLastTime").textContent = toReadableTime(newest.ts);
+        const newestIssues = Array.isArray(newest.issues)
+          ? newest.issues.join(", ")
+          : (newest.eventTypeDisplay || newest.eventType || "-");
+        document.getElementById("statLastIssues").textContent = newestIssues || "-";
+      } else {
+        document.getElementById("statLastTime").textContent = "—";
+        document.getElementById("statLastIssues").textContent = "—";
+      }
+
+      const container = document.getElementById("events");
+      container.innerHTML = "";
+
+      if (items.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "eventCard";
+        empty.innerHTML = `
+          <div class="topRow">
+            <div class="pill"><span class="dot warn"></span><span>No alerts found</span></div>
+            <div class="time">${deviceId}</div>
+          </div>
+          <div class="footerHint" style="margin-top:8px;">
+            Publish a test message that exceeds thresholds so an ALERT record is stored in DynamoDB.
+          </div>
+        `;
+        container.appendChild(empty);
+        return;
+      }
+
+      items.forEach(item => {
+        const timeStr = toReadableTime(item.ts);
+        const issues = Array.isArray(item.issues) ? item.issues : [];
+        const issueMessages = Array.isArray(item.issueMessages) ? item.issueMessages : [];
+
+        const fallbackIssue = item.eventTypeDisplay || item.eventType;
+        const fallbackMessage = item.messageDisplay || item.message;
+
+        const badgeHtml = (issues.length ? issues : (fallbackIssue ? [fallbackIssue] : []))
+          .map(x => `<span class="badge ${badgeClass(x)}">${x}</span>`)
+          .join("");
+
+        const msgHtml = (issueMessages.length ? issueMessages : (fallbackMessage ? [fallbackMessage] : []))
+          .map(m => `<div class="msg">• ${String(m)}</div>`)
+          .join("");
+
+        const div = document.createElement("div");
+        div.className = "eventCard";
+        div.innerHTML = `
+          <div class="topRow">
+            <div class="pill">
+              <span class="dot bad"></span>
+              <span>${item.status || "ALERT"}</span>
+            </div>
+            <div class="time">${timeStr}</div>
+          </div>
+
+          <div class="badgeRow">${badgeHtml || `<span class="badge">EVENT</span>`}</div>
+
+          <div class="kv">
+            <div class="kvBox"><div class="k">Temperature (°C)</div><div class="v">${item.temperature ?? "-"}</div></div>
+            <div class="kvBox"><div class="k">Humidity (%)</div><div class="v">${item.humidity ?? "-"}</div></div>
+            <div class="kvBox"><div class="k">Motion</div><div class="v">${item.motion ?? "-"}</div></div>
+            <div class="kvBox"><div class="k">Lid Opened</div><div class="v">${item.lidOpened === true ? "Yes" : item.lidOpened === false ? "No" : "-"}</div></div>
+          </div>
+
+          <div class="msgList">
+            <div class="title">Detected issue(s)</div>
+            ${msgHtml || `<div class="msg">No message available.</div>`}
+          </div>
+        `;
+
+        container.appendChild(div);
+      });
+
+    } catch (err) {
+      setHealth(false, "API Down");
+      showError(`Dashboard error: ${err}`);
+      document.getElementById("statusText").textContent = "Failed";
+    }
+  }
+
+  loadEvents();
+  setInterval(() => loadEvents(false), 5000);
+</script>
+</body>
+</html>
