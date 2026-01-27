@@ -41,11 +41,7 @@
       --accent-secondary: rgba(16,185,129,.85);
     }
 
-    *{
-      box-sizing:border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *{ box-sizing:border-box; margin:0; padding:0; }
 
     body{
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -60,10 +56,7 @@
       background-attachment: fixed;
     }
 
-    .wrap{
-      max-width: 1400px;
-      margin: 0 auto;
-    }
+    .wrap{ max-width: 1400px; margin: 0 auto; }
 
     header{
       display:flex;
@@ -77,7 +70,6 @@
 
     h1{
       font-size: 32px;
-      margin:0;
       letter-spacing: -.5px;
       font-weight: 900;
       background: linear-gradient(135deg, var(--text) 0%, rgba(240,244,255,.85) 100%);
@@ -109,9 +101,7 @@
     .panel::before{
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 1px;
       background: linear-gradient(90deg,
         transparent 0%,
@@ -239,11 +229,6 @@
       transition: all .2s ease;
     }
 
-    .pill:hover{
-      border-color: rgba(255,255,255,.22);
-      background: rgba(255,255,255,.14);
-    }
-
     .dot{
       width: 8px;
       height: 8px;
@@ -258,18 +243,9 @@
       50% { opacity: .7; transform: scale(.95); }
     }
 
-    .dot.ok{
-      background: var(--ok);
-      box-shadow: 0 0 12px rgba(16,185,129,.6);
-    }
-    .dot.warn{
-      background: var(--warn);
-      box-shadow: 0 0 12px rgba(245,158,11,.6);
-    }
-    .dot.bad{
-      background: var(--bad);
-      box-shadow: 0 0 12px rgba(239,68,68,.6);
-    }
+    .dot.ok{ background: var(--ok); box-shadow: 0 0 12px rgba(16,185,129,.6); }
+    .dot.warn{ background: var(--warn); box-shadow: 0 0 12px rgba(245,158,11,.6); }
+    .dot.bad{ background: var(--bad); box-shadow: 0 0 12px rgba(239,68,68,.6); }
 
     .grid{
       display:grid;
@@ -301,24 +277,8 @@
       transition: all .2s ease;
     }
 
-    .statRow:hover{
-      border-color: rgba(255,255,255,.18);
-      background: linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.07));
-      transform: translateX(2px);
-    }
-
-    .statLabel{
-      color: var(--muted);
-      font-size: 12.5px;
-      margin: 0;
-      font-weight: 600;
-    }
-
-    .statValue{
-      font-weight: 900;
-      font-size: 19px;
-      letter-spacing: -.2px;
-    }
+    .statLabel{ color: var(--muted); font-size: 12.5px; font-weight: 600; }
+    .statValue{ font-weight: 900; font-size: 19px; letter-spacing: -.2px; }
 
     .eventsHeader{
       display:flex;
@@ -336,9 +296,7 @@
       margin-top: 14px;
     }
 
-    @media (max-width: 980px){
-      .cardsGrid{ grid-template-columns: 1fr; }
-    }
+    @media (max-width: 980px){ .cardsGrid{ grid-template-columns: 1fr; } }
 
     .eventCard{
       border-radius: var(--radius);
@@ -353,28 +311,11 @@
       animation: fadeIn .4s ease-out backwards;
     }
 
-    .eventCard::after{
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(239,68,68,.4) 50%,
-        transparent 100%);
-      opacity: 0;
-      transition: opacity .25s ease;
-    }
-
     .eventCard:hover{
       transform: translateY(-3px);
       border-color: rgba(255,255,255,.22);
       box-shadow: 0 16px 40px rgba(0,0,0,.35);
     }
-
-    .eventCard:hover::after{ opacity: 1; }
 
     .topRow{
       display:flex;
@@ -411,8 +352,6 @@
       transition: all .2s ease;
     }
 
-    .badge:hover{ transform: translateY(-1px); }
-
     .badge.hot{
       border-color: rgba(239,68,68,.45);
       background: linear-gradient(135deg, rgba(239,68,68,.18), rgba(239,68,68,.12));
@@ -441,9 +380,7 @@
       margin-top: 12px;
     }
 
-    @media (max-width: 720px){
-      .kv{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
+    @media (max-width: 720px){ .kv{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
     .kvBox{
       padding: 11px 13px;
@@ -451,12 +388,6 @@
       border: 1.5px solid rgba(255,255,255,.12);
       background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
       transition: all .2s ease;
-    }
-
-    .kvBox:hover{
-      border-color: rgba(255,255,255,.18);
-      background: linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,.07));
-      transform: scale(1.02);
     }
 
     .kvBox .k{
@@ -561,10 +492,7 @@
     </header>
 
     <div class="panel controls">
-      <div class="field">
-        <label for="deviceId">Device ID</label>
-        <input id="deviceId" value="pharmabox-001" />
-      </div>
+      <!-- ✅ Device ID removed (single device only) -->
 
       <div class="field" style="min-width:140px;">
         <label for="limit">Limit (max 50)</label>
@@ -665,6 +593,9 @@
 <script>
   const API_BASE = "https://r6zqp9jvi4.execute-api.ap-southeast-2.amazonaws.com/events";
 
+  // ✅ Fixed single device
+  const DEVICE_ID = "pharmabox-001";
+
   const QUICKSIGHT_DASHBOARD_URL =
     "https://ap-southeast-2.quicksight.aws.amazon.com/sn/account/amir-ITAD-project/dashboards/e082f6db-dfcf-4085-9291-17d7f2f6d414/views/fc21a43c-8e34-4152-83b9-830028577f43";
 
@@ -713,7 +644,7 @@
     try {
       clearError();
 
-      const deviceId = (document.getElementById("deviceId").value || "").trim() || "pharmabox-001";
+      const deviceId = DEVICE_ID; // ✅ always fixed
       const limitVal = (document.getElementById("limit").value || "").trim() || "25";
       let limit = Number(limitVal);
       if (!Number.isFinite(limit) || limit < 1) limit = 25;
