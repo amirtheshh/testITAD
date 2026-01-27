@@ -308,7 +308,6 @@
       height: 100%;
       position: relative;
       animation: fadeIn .4s ease-out backwards;
-      width: 700px;
     }
 
     .eventCard:hover{
@@ -374,37 +373,36 @@
     }
 
     .kv{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 20px;
-      margin-top: 15px;
-    }
+  display:grid;
+  grid-template-columns: repeat(2, 1fr); /* ✅ Changed to 2 columns */
+  gap: 12px;
+  margin-top: 15px;
+}
 
-    @media (max-width: 720px){ .kv{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px){ .kv{ grid-template-columns: 1fr; } }
 
-    .kvBox{
-      padding: 11px 13px;
-      border-radius: var(--radius-sm);
-      border: 1.5px solid rgba(255,255,255,.12);
-      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
-      transition: all .2s ease;
-      min-width: 140px;
-    }
+.kvBox{
+  padding: 20px; /* ✅ More padding */
+  border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(255,255,255,.12);
+  background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+  transition: all .2s ease;
+}
 
-    .kvBox .k{
-      color: var(--muted);
-      font-size: 11.5px;
-      margin-bottom: 5px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .3px;
-    }
+.kvBox .k{
+  color: var(--muted);
+  font-size: 12px; /* ✅ Slightly bigger */
+  margin-bottom: 8px; /* ✅ More space */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
 
-    .kvBox .v{
-      font-weight: 900;
-      font-size: 15px;
-      letter-spacing: -.2px;
-    }
+.kvBox .v{
+  font-weight: 900;
+  font-size: 28px; /* ✅ Much bigger numbers */
+  letter-spacing: -.5px;
+}
 
     .msgList{
       margin-top: 12px;
