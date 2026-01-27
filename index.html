@@ -4,6 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PharmaBox Dashboard</title>
+
+  <!-- ✅ CSP: allow API fetch + allow QuickSight iframe -->
+  <meta http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self' https: data:;
+      img-src 'self' https: data:;
+      style-src 'self' 'unsafe-inline' https:;
+      script-src 'self' 'unsafe-inline' https:;
+      connect-src 'self' https:;
+      frame-src https://ap-southeast-2.quicksight.aws.amazon.com;
+    ">
+
   <style>
     :root{
       --bg1:#0a0f1e;
@@ -189,9 +201,7 @@
       transition: left .5s ease;
     }
 
-    button:hover::before{
-      left: 100%;
-    }
+    button:hover::before{ left: 100%; }
 
     button:hover{
       transform: translateY(-2px);
@@ -202,7 +212,6 @@
 
     button:active{ transform: translateY(0); }
 
-    /* Secondary button look for the "Live Analytics" CTA */
     .btn-secondary{
       border: 1.5px solid rgba(16,185,129,.45);
       background: linear-gradient(135deg, rgba(16,185,129,.18), rgba(16,185,129,.12));
@@ -565,7 +574,6 @@
       <div class="actions">
         <button onclick="loadEvents(true)">Refresh</button>
 
-        <!-- ✅ NEW: QuickSight "Live Analytics" button -->
         <button class="btn-secondary" onclick="openQuickSight()">
           📊 Live Analytics (QuickSight)
         </button>
@@ -595,35 +603,11 @@
           using IoT Core MQTT Test Client with temperature/humidity/motion thresholds exceeded.
         </div>
 
-        <!-- ✅ NEW: Simple embed note (since sandbox/SSO blocks true embed) -->
         <div class="footerHint" style="margin-top:10px;">
-          🔒 QuickSight is opened via AWS SSO (secure redirect). Direct embedding is restricted unless the hosting domain is allow-listed in QuickSight admin settings.
+          🔒 QuickSight is opened via AWS SSO (secure redirect). Direct embedding may still be blocked by QuickSight unless
+          embedding is configured (registered domain + embed session).
         </div>
       </div>
-
-      <!-- ✅ NEW: Embedded QuickSight Analytics -->
-    <div class="panel events" style="padding:16px;">
-      <div class="pill" style="justify-content:space-between; width:100%; margin-bottom:12px;">
-        <span>📊 Live Analytics (QuickSight)</span>
-        <span class="pill">
-          <span class="dot ok"></span>
-          <span>Embedded</span>
-        </span>
-      </div>
-
-    <iframe
-      src="https://ap-southeast-2.quicksight.aws.amazon.com/sn/embed/share/accounts/622483791842/dashboards/e082f6db-dfcf-4085-9291-17d7f2f6d414?directory_alias=amir-ITAD-project"
-      width="100%"
-      height="800"
-      style="border:none; border-radius:16px;"
-      loading="lazy"
-      referrerpolicy="no-referrer"
-    ></iframe>
-
-    <div class="footerHint" style="margin-top:10px;">
-      If the embedded dashboard does not load, this is due to AWS SSO sandbox restrictions on iframe embedding.
-    </div>
-  </div>
 
       <div class="panel stats">
         <div class="pill" style="justify-content:space-between; width:100%;">
@@ -651,15 +635,39 @@
         </div>
       </div>
     </div>
+
+    <!-- ✅ Embedded QuickSight (below the main grid) -->
+    <div class="panel events" style="padding:16px; margin-top:14px;">
+      <div class="pill" style="justify-content:space-between; width:100%; margin-bottom:12px;">
+        <span>📊 Live Analytics (QuickSight)</span>
+        <span class="pill" title="Embed status">
+          <span class="dot ok"></span>
+          <span>Embedded</span>
+        </span>
+      </div>
+
+      <iframe
+        src="https://ap-southeast-2.quicksight.aws.amazon.com/sn/embed/share/accounts/622483791842/dashboards/e082f6db-dfcf-4085-9291-17d7f2f6d414?directory_alias=amir-ITAD-project"
+        width="100%"
+        height="800"
+        style="border:none; border-radius:16px;"
+        loading="lazy"
+      ></iframe>
+
+      <div class="footerHint" style="margin-top:10px;">
+        If it still doesn’t load, QuickSight itself is blocking iframe embedding (SSO/permissions/embed-session required).
+        In that case, the button above (opens QuickSight in a new tab) is the safe fallback.
+      </div>
+    </div>
+
   </div>
 
 <script>
   const API_BASE = "https://r6zqp9jvi4.execute-api.ap-southeast-2.amazonaws.com/events";
 
-  // ✅ NEW: Your QuickSight dashboard link
-  const QUICKSIGHT_DASHBOARD_URL ="https://ap-southeast-2.quicksight.aws.amazon.com/sn/account/amir-ITAD-project/dashboards/e082f6db-dfcf-4085-9291-17d7f2f6d414/views/fc21a43c-8e34-4152-83b9-830028577f43";
+  const QUICKSIGHT_DASHBOARD_URL =
+    "https://ap-southeast-2.quicksight.aws.amazon.com/sn/account/amir-ITAD-project/dashboards/e082f6db-dfcf-4085-9291-17d7f2f6d414/views/fc21a43c-8e34-4152-83b9-830028577f43";
 
-  // ✅ NEW: Opens QuickSight in a new tab (SSO will prompt if needed)
   function openQuickSight() {
     window.open(QUICKSIGHT_DASHBOARD_URL, "_blank", "noopener,noreferrer");
   }
@@ -728,9 +736,7 @@
       const items = Array.isArray(data.items) ? data.items : [];
       setHealth(true, "API OK");
 
-      document.getElementById("statusText").textContent =
-        `Showing ${items.length} alert record(s)`;
-
+      document.getElementById("statusText").textContent = `Showing ${items.length} alert record(s)`;
       document.getElementById("statCount").textContent = String(items.length || 0);
 
       if (items.length > 0) {
