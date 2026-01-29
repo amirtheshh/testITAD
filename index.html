@@ -696,6 +696,14 @@
     window.open(QUICKSIGHT_DASHBOARD_URL, "_blank", "noopener,noreferrer");
   }
 
+  function humanizeLabel(text) {
+    if (!text) return "-";
+    return String(text)
+    .replace(/_/g, " ")      // underscores → spaces
+    .toUpperCase();          // keep your current ALL CAPS style
+  }
+
+
   /* =========================
      THEME TOGGLE
   ========================= */
@@ -788,7 +796,11 @@
         const newestIssues = Array.isArray(newest.issues)
           ? newest.issues.join(", ")
           : (newest.eventTypeDisplay || newest.eventType || "-");
-        document.getElementById("statLastIssues").textContent = newestIssues || "-";
+        document.getElementById("statLastIssues").textContent =
+  newestIssues
+    ? newestIssues.split(",").map(humanizeLabel).join(", ")
+    : "-";
+
       } else {
         document.getElementById("statLastTime").textContent = "—";
         document.getElementById("statLastIssues").textContent = "—";
@@ -822,7 +834,7 @@
         const fallbackMessage = item.messageDisplay || item.message;
 
         const badgeHtml = (issues.length ? issues : (fallbackIssue ? [fallbackIssue] : []))
-          .map(x => `<span class="badge ${badgeClass(x)}">${x}</span>`)
+          .map(x => `<span class="badge ${badgeClass(x)}">${humanizeLabel(x)}</span>`)
           .join("");
 
         const msgHtml = (issueMessages.length ? issueMessages : (fallbackMessage ? [fallbackMessage] : []))
